@@ -28,8 +28,6 @@ fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+fruit_cho
 fruityvice_normalized = pandas.json_normalize(fruityvice_response.json()) #put josn data to normaise using panda
 # write your own comment - what does this do?
 streamlit.dataframe(fruityvice_normalized) #display normalised json content 
-
-
 my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
 my_cur = my_cnx.cursor()
 my_cur.execute("SELECT * from fruit_load_list")
@@ -37,8 +35,6 @@ my_data_row = my_cur.fetchall()
 streamlit.header("The fruit load list contains:")
 streamlit.dataframe(my_data_row)
 selected_addition =streamlit.text_input('What fruit would you like to add?','banana')
-add_cur=my_cnx.cursor()
-add_cur.execute("select * from fruit_load_list where Fruit_name="+selected_addition)
-add_data_row=add_cur.fetchall()
-streamlit.write('Thanks for adding ', add_data)
+streamlit.dataframe(my_data_row).filter(selected_addition)
+streamlit.write('Thanks for adding ', my_data_row)
 
